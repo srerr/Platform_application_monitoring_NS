@@ -1,3 +1,6 @@
+#git link: https://github.com/k8ssandra/k8ssandra-operator.git
+==>clone github chart
+    git clone https://github.com/k8ssandra/k8ssandra-operator.git
 # Commands to install k8ssandra operator as a cluster in my kubernetes using HELM:
 ----------------------------------------------------------------------------------
     #install the k8ssandra operator using Helm:
