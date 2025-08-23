@@ -1,0 +1,93 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: my-postgres
+  namespace: corens
+spec:
+  # Number of Postgres instances (1 primary + 2 replicas)
+  instances: 3
+
+  # PostgreSQL image to use
+  imageName: ghcr.io/cloudnative-pg/postgresql:16
+
+  # Storage settings
+  storage:
+    size: 5Gi                   # PersistentVolume size
+    #storageClass: gp2            # Example for AWS, change to your storage class
+
+  # Bootstrap with a custom DB + user
+  bootstrap:
+    initdb:
+      database: myappdb           # Default database
+      owner: myappuser            # Default DB owner
+      secret:
+        name: myappuser-secret    # Secret with credentials
+
+  # PostgreSQL config parameters (like postgresql.conf)
+  postgresql:
+    parameters:
+      max_connections: "200"
+      shared_buffers: "512MB"
+      work_mem: "16MB"
+      maintenance_work_mem: "128MB"
+      wal_keep_size: "512MB"
+
+  # Enable monitoring
+  monitoring:
+    enablePodMonitor: false
+
+  # Backup configuration (WAL archiving to S3, GCS, etc.)
+  backup:
+    barmanObjectStore:
+      destinationPath: "s3://backup1234567890qw/"   # Change to your bucket
+      s3Credentials:
+        accessKeyId:
+          name: s3-creds
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: s3-creds
+          key: ACCESS_SECRET_KEY
+      wal:
+        compression: gzip
+        encryption: AES256
+      data:
+        compression: gzip
+        encryption: AES256
+
+  # Resource requests and limits for Postgres pods
+  resources:
+    requests:
+      cpu: "500m"
+      memory: "1Gi"
+    limits:
+      cpu: "2"
+      memory: "4Gi"
+
+  # Affinity/Anti-Affinity (spread replicas across nodes)
+  #affinity:
+  #  podAntiAffinity:
+  #    preferredDuringSchedulingIgnoredDuringExecution:
+  #      - weight: 100
+  #        podAffinityTerm:
+  #          labelSelector:
+  #            matchExpressions:
+  #              - key: app
+  #                operator: In
+  #                values:
+  #                  - my-postgres
+  #          topologyKey: "kubernetes.io/hostname"
+
+  # Service exposure
+  #serviceAccountTemplate:
+  #  metadata:
+  #    labels:
+  #      app: my-postgres
+
+  # Superuser secret (optional, if you want custom instead of auto-generated)
+  #superuserSecret:
+  #  name: my-superuser-secret
+
+  # TLS settings (optional for secure connections)
+  #certificates:
+  #  serverTLSSecret: my-postgres-server
+  #  clientCASecret: my-postgres-ca

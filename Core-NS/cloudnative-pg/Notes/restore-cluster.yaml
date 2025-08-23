@@ -1,0 +1,31 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: my-postgres-restore
+  namespace: corens
+spec:
+  instances: 2
+
+  # Use recovery mode
+  bootstrap:
+    recovery:
+      backup:
+        name: my-postgres-sched-backup-20250821   # Backup object name
+      recoveryTarget:
+        targetTime: "2024-08-21T12:00:00Z"          # Point-in-time recovery
+
+  storage:
+    size: 5Gi
+
+  backup:
+    barmanObjectStore:
+      destinationPath: s3://my-cnpg-backups/
+      s3Credentials:
+        accessKeyId:
+          name: aws-creds
+          key: ACCESS_KEY_ID
+        secretAccessKey:
+          name: aws-creds
+          key: SECRET_ACCESS_KEY
+      wal:
+        compression: gzip

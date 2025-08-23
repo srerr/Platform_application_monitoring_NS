@@ -1,0 +1,11 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: my-postgres-sched-backup
+  namespace: corens
+spec:
+  schedule: "*/1 * * * *"   # every 1 minute
+  backupOwnerReference: self
+  cluster:
+    name: my-postgres
+  

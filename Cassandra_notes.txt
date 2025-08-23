@@ -1,0 +1,102 @@
+=>conf/cassandra.yaml
+=>bin/cassandra -f
+=>bin/cqlsh -u cassandra -p cassandra
+=> python manage.py sync_cassandra
+# Cassandra Notes:
+--------------------
+    - K8ssandra is a Kubernetes operator for managing Cassandra clusters.
+    - It simplifies the deployment, scaling, and management of Cassandra on Kubernetes.
+    - Cassandra is a distributed NoSQL database designed for scalability and high availability.
+    - It uses a peer-to-peer architecture, allowing any node to handle requests.
+    - Data is stored in a partitioned and replicated manner across multiple nodes.
+    - Cassandra Query Language (CQL) is used for interacting with the database.
+    - It supports tunable consistency, allowing developers to balance between consistency and availability.
+    - Common use cases include real-time analytics, IoT applications, and content management systems.
+    - keyspace: A keyspace is a namespace that defines how data is replicated across the nodes in a Cassandra cluster.
+    - table: A table is a collection of rows, where each row is identified by a unique primary key. 
+    - row: A row is a single record in a table, identified by its primary key.
+    - column: A column is a key-value pair within a row, where the key is the column name and the value is the data stored in that column.  
+    - partition key: The partition key is a subset of the primary key that determines how data is distributed across the nodes in the cluster.
+    - clustering key: The clustering key is used to sort the data within a partition, allowing for efficient querying.  
+
+# About Cassandra commands
+-----------------------------
+    - Cassandra commands are executed using the Cassandra Query Language (CQL).
+    - `cqlsh`: Cassandra Query Language Shell, used to interact with the database.
+    - `COPY`: Command to import/export data between CSV files and Cassandra tables.
+    - `DESCRIBE`: Command to show the schema of a keyspace or table.
+    - `SELECT`: Command to query data from a table.
+    - `INSERT`: Command to add new data to a table.
+    - `UPDATE`: Command to modify existing data in a table.
+    - `DELETE`: Command to remove data from a table.
+    - `CREATE KEYSPACE`: Command to create a new keyspace (namespace for tables).
+    - `CREATE TABLE`: Command to create a new table within a keyspace.
+    - `ALTER TABLE`: Command to modify the structure of an existing table.
+    - `DROP KEYSPACE`: Command to delete a keyspace and all its tables.
+    - `DROP TABLE`: Command to delete a table from a keyspace.
+    - `TRUNCATE`: Command to remove all data from a table without deleting the table.
+    - `USE`: Command to switch to a specific keyspace.
+    - `LIST`: Command to show available keyspaces or tables.
+    - `HELP`: Command to display help information for CQL commands.
+# Cassandra commands with syntax and example:
+---------------------------------------------
+    - `cqlsh`: Launch the Cassandra Query Language Shell.
+      Example: `cqlsh` or `cqlsh <hostname> <port>` # Connect to a specific Cassandra instance. 
+    - `COPY`: Import/export data between CSV files and Cassandra tables.
+      Example: `COPY keyspace_name.table_name (column1, column2) FROM 'data.csv' WITH HEADER = TRUE;`
+    - `DESCRIBE`: Show the schema of a keyspace or table.
+      Example: `DESCRIBE keyspace_name;` or `DESCRIBE keyspace_name.table_name;`
+      Example:  `DESCRIBE keyspaces;`
+    - `USE`: Switch to a specific keyspace.
+      Example: `USE keyspace_name;`
+    - `CREATE KEYSPACE`: Create a new keyspace.
+      Example: `CREATE KEYSPACE keyspace_name WITH REPLICATION = {'class': 'SimpleStrategy', 'replication_factor': 3};`
+    - `CREATE TABLE`: Create a new table within a keyspace.
+      Example: CREATE TABLE user_profiles (
+          name TEXT,
+          email TEXT,
+          created_at TIMESTAMP,
+          primary key (created_at)
+      );
+    - 'INSERT': Add new data to a table.
+      Example: `INSERT INTO keyspace_name.table_name (column1, column2) VALUES ('value1', 'value2');`
+    - `UPDATE`: Modify existing data in a table.
+      Example: `UPDATE keyspace_name.table_name SET column1 = 'new_value' WHERE column2 = 'value2';`
+    - `DELETE`: Remove data from a table.
+      Example: `DELETE FROM keyspace_name.table_name WHERE column1 = 'value1';`
+    - `DROP KEYSPACE`: Delete a keyspace and all its tables.
+      Example: `DROP KEYSPACE keyspace_name;`
+    - `DROP TABLE`: Delete a table from a keyspace.
+      Example: `DROP TABLE keyspace_name.table_name;`
+    - `TRUNCATE`: Remove all data from a table without deleting the table.
+      Example: `TRUNCATE keyspace_name.table_name;`
+    - `LIST`: Show available keyspaces or tables.
+      Example: `LIST KEYSPACES;` or `LIST TABLES IN keyspace_name;`
+    - `HELP`: Display help information for CQL commands.
+      Example: `HELP;` or `HELP command_name;`  
+    - 'ALTER TABLE': Modify the structure of an existing table.
+      Example: `ALTER TABLE keyspace_name.table_name ADD new_column TEXT;`
+    - list keyspaces: `LIST KEYSPACES;`
+      Example: `LIST KEYSPACES;`
+
+# Cassandra backup and recovery:
+-----------------------------
+    - Cassandra supports native snapshots for backup.
+    - Snapshots can be created using the `nodetool snapshot` command.
+    - Backups can be stored in S3 or other object storage systems.
+    - Medusa is a popular tool for managing Cassandra backups and restores.
+    - It provides features like incremental backups, retention policies, and monitoring.
+    - Other tools include Tablesnap, Apache Cassandra Backup (ACB), Instaclustr Cassandra Backup, and custom scripts with S3 integration.   
+# Cassandra backup tools:
+-------------------------
+1) Cassandra Native Snapshots + S3 Upload
+   - Native snapshots are created using `nodetool snapshot`.
+   - Snapshots can be uploaded to S3 for long-term storage. 
+2) Medusa (Spotify's Cassandra Backup Tool)
+   - Provides incremental backups, retention policies, and monitoring.
+3) Tablesnap
+   - A tool for taking snapshots of Cassandra tables and uploading them to S3.  
+4) Apache Cassandra Backup (ACB)
+   - A tool for managing backups of Cassandra clusters. 
+5) Instaclustr Cassandra Backup
+   - A managed backup solution for Cassandra clusters hosted on Instaclustr.    

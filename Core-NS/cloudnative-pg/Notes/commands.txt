@@ -1,0 +1,61 @@
+# Commands to install CloudNativePG as a cluster in my kubernetes using HELM:
+-------------------------------------------------------------------------------
+    # Install the CloudNativePG operator using Helm:
+    ------------------------------------------------
+        1. Add the CloudNativePG Helm repository:
+            -->helm repo add cloudnative-pg https://cloudnative-pg.github.io/charts
+        2. Update your local Helm chart repository cache:
+            -->helm repo update
+        3. Install the CloudNativePG operator:
+            -->helm install my-cloudnative-pg cloudnative-pg/cloudnative-pg
+        4. helm show values and store into values.yaml
+            -->helm show values cloudnative-pg/cloudnative-pg > values.yaml
+        5. installing using the values.yaml file:
+            -->helm install my-cloudnative-pg cloudnative-pg/cloudnative-pg -f values.yaml  
+        6. Verify the installation:
+                ram@ram:~/Platform_application_monitoring_NS/Core-NS/cloudnative-pg$ helm install cloudnative-pg cloudnative-pg/cloudnative-pg -f values.yaml --namespace corens --create-namespace
+                NAME: cloudnative-pg
+                LAST DEPLOYED: Thu Aug 21 17:14:34 2025
+                NAMESPACE: corens
+                STATUS: deployed
+                REVISION: 1
+                TEST SUITE: None
+                NOTES:
+                CloudNativePG operator should be installed in namespace "corens".
+                You can now create a PostgreSQL cluster with 3 nodes as follows:
+
+                cat <<EOF | kubectl apply -f -
+                # Example of PostgreSQL cluster
+                apiVersion: postgresql.cnpg.io/v1
+                kind: Cluster
+                metadata:
+                name: cluster-example
+                
+                spec:
+                instances: 3
+                storage:
+                    size: 1Gi
+                EOF
+#Connect to the PostgreSQL cluster inside postgresql instances:
+---------------------------------------------------------------
+    1)Get the Username and Password:
+    ----------------------------------
+    =>kubectl get secret my-postgres-app -n corens -o jsonpath='{.data.username}' | base64 -d; echo
+    =>kubectl get secret my-postgres-app -n corens -o jsonpath='{.data.password}' | base64 -d; echo
+    2) Connect to the PostgreSQL cluster:
+    -------------------------------------
+    =>kubectl run -it psql-client -n corens --rm --image=postgres:16 --restart=Never   --env="PGPASSWORD=$(kubectl get secret my-postgres-app -n corens -o jsonpath='{.data.password}' | base64 -d)"   --restart=Never --   psql -h my-postgres-rw.corens.svc.cluster.local -U app
+    3) OR exec into the pod:
+    =>kubectl exec -it <pod-name> -n corens -- psql -h my-postgres-rw.corens.svc.cluster.local -U app   
+
+# list scheduled backups:
+-----------------------------------------------
+    =>kubectl get scheduledbackups -n corens
+    =>kubectl describe scheduledbackups my-postgres-sched-backup-20250821 -n corens
+    =>kubectl get backups -n corens
+    =>kubectl describe backups my-postgres-backup-20250821-000000 -n corens
+    =>kubectl get restore -n corens
+    =>kubectl describe restore my-postgres-restore -n corens
+    =>kubectl get cj -n corens
+    =>kubectl describe cj my-postgres-backup-cj -n corens
+

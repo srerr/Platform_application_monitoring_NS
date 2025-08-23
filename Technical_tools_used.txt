@@ -1,0 +1,192 @@
+# Databases:
+------------
+1) Postgres DB [CNPG - Cloud Native Postgres operator]
+2) Cassandra DB[K8ssandra Operator (Recommended)]
+# DB backup tools:
+-------------------
+1) For Postgres DB:
+   Barman (Backup and Recovery Manager)
+   - Enterprise-grade backup solution
+   - Native S3 support via boto3
+   - Incremental backups
+   - Retention policy management
+   - Monitoring and alerting
+2) For Cassandra DB:
+   - Cassandra Native Snapshots + S3 Upload
+   - Medusa (Spotify's Cassandra Backup Tool)
+   - Tablesnap
+   - Apache Cassandra Backup (ACB)
+   - Instaclustr Cassandra Backup
+   - Custom Scripts + S3 Integration
+
+=> Hashicorp Vault for secrets management and encryption keys 
+=> Hashicorp Consul for service discovery and configuration management
+=> For logs:
+    - loki
+    - fluent bit
+=> For monitoring:
+    - Prometheus
+=> For alerting:
+    - Alertmanager
+=> For traces and metrics:
+    - OpenTelemetry
+=> Sentry for error tracking and monitoring
+=> Ingress controllers:
+    - NGINX Ingress Controller
+    - Aws Load Balancer Controller
+=> External DNS for managing DNS records dynamically
+=> Route 53 for DNS management and certificate Manager for SSL/TLS certificates
+=> Nagios for infrastructure monitoring
+
+
+#Application Namespace:
+-----------------------
+1) Application Deployments
+2) Application Services
+3) Application ConfigMaps
+4) Application pvc's
+5) Application Secrets
+    ->https://www.youtube.com/watch?v=jUYNS90nq8U
+
+# core-namespace:
+-----------------
+1) postgres operator
+    ->https://youtu.be/Ny9RxM6H6Hg?si=ok4kW52deYBcuWrF
+    -> https://www.youtube.com/watch?v=XB-kBqLj5uA
+    ->https://www.youtube.com/watch?v=ha3LjlD6g7g
+
+2) cassandra operator
+3) Hashicorp Vault
+4) Hashicorp Consul
+5) core ConfigMaps
+6) core pvc's
+7) Ingress
+8) External DNS
+9) AWS-secrets-manager
+10) cassandra backup tool Medusa(job)
+11) Postgres backup tool Barman(job)
+
+# Monitoring Namespace:
+------------------------
+1) Prometheus Operator
+2) Alertmanager
+3) Loki
+4) Fluent Bit
+5) OpenTelemetry Collector
+6) Sentry
+7) Nagios
+8) Grafana (for visualization)
+9) Kube-state-metrics
+10) Node Exporter
+11) monitoring ConfigMaps
+12) monitoring pvc's
+
+# list of gitops tools
+1) Argo CD
+2) Flux
+3) Jenkins X
+4) Spinnaker
+5) GitLab CI/CD
+
+
+'''DATABASES = {
+   'default': {
+       'ENGINE': 'django.db.backends.postgresql',
+       'NAME': 'sreeram',
+       'USER': 'postgres1',
+       'PASSWORD': 'Sreeram@521',
+       'HOST': '172.28.22.245',
+       'PORT': '5432',
+   },
+    'videos': {
+        'ENGINE': 'django_cassandra_engine',
+        'NAME': 'testks',
+        'TEST_NAME': 'testks',
+        'HOST': '127.0.0.1',
+        'PORT': 9042,
+        'USER': 'cassandra',
+        'PASSWORD': 'cassandra',
+        'OPTIONS': {
+                'replication': {
+                    'strategy_class': 'SimpleStrategy',
+                    'replication_factor': 1,
+                }
+            }
+        }
+    }
+'''
+
+
+#secrets:
+#--------
+#POSTGRES:
+----------
+1) ENGINE
+2) NAME
+3) USER
+4) PASSWORD
+5) HOST
+6) PORT
+POSTGRES_ENGINE=django.db.backends.postgresql
+POSTGRES_NAME=sreeram
+POSTGRES_USER=postgres1
+POSTGRES_PASSWORD=Sreeram@521
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+
+#CASSANDRA:
+-------------
+1) ENGINE
+2) NAME
+3) TEST_NAME
+4) HOST
+5) PORT
+6) USER
+7) PASSWORD
+CASSANDRA_ENGINE=django_cassandra_engine
+CASSANDRA_NAME=videos
+CASSANDRA_TEST_NAME=videos
+CASSANDRA_HOST=localhost
+CASSANDRA_PORT=9042
+CASSANDRA_USER=cassandra
+CASSANDRA_PASSWORD=cassandra    
+
+KEYSPACE=videos
+
+
+
+
+
+
+
+
+
+
+
+
+
+NAMESPACE      NAME                                                     READY   STATUS             RESTARTS         AGE
+cert-manager   cert-manager-55c69bf5cf-fwpq6                            1/1     Running            35 (6m55s ago)   292d
+cert-manager   cert-manager-cainjector-5765b5f544-mztnd                 1/1     Running            28 (5m50s ago)   292d
+cert-manager   cert-manager-webhook-6b67444dc9-xhzv2                    1/1     Running            23 (6m55s ago)   292d
+default        aws-eks-test-deployment-6c6c7ff966-8m8qg                 1/1     Running            3 (6m55s ago)    90d
+default        aws-eks-test-deployment-6c6c7ff966-n2wh7                 1/1     Running            3 (6m55s ago)    90d
+default        mysql-deployment-66d796c4f5-574pv                        1/1     Running            6 (6m55s ago)    92d
+kube-system    coredns-6f6b679f8f-lpmkx                                 1/1     Running            15 (6m55s ago)   292d
+kube-system    etcd-minikube                                            1/1     Running            11 (6m55s ago)   292d
+kube-system    kube-apiserver-minikube                                  1/1     Running            14 (6m55s ago)   292d
+kube-system    kube-controller-manager-minikube                         1/1     Running            17 (6m55s ago)   292d
+kube-system    kube-proxy-x982z                                         1/1     Running            11 (6m55s ago)   292d
+kube-system    kube-scheduler-minikube                                  1/1     Running            13 (6m55s ago)   292d
+kube-system    storage-provisioner                                      1/1     Running            36 (5m57s ago)   292d
+monitoring     alertmanager-prometheus-kube-prometheus-alertmanager-0   2/2     Running            12 (6m55s ago)   92d
+monitoring     loki-0                                                   1/1     Running            6 (6m55s ago)    92d
+monitoring     loki-fluent-bit-loki-46xbs                               1/1     Running            6 (6m55s ago)    92d
+monitoring     loki-grafana-85fcbfd577-g2bnf                            1/2     CrashLoopBackOff   76 (11s ago)     92d
+monitoring     opentelemetry-operator-69fdd455b6-4776f                  2/2     Running            8 (6m55s ago)    90d
+monitoring     otel-collector-collector-576c9f6dc6-jzqvz                1/1     Running            4 (6m55s ago)    90d
+monitoring     prometheus-kube-prometheus-operator-59c4454c54-rjkfs     1/1     Running            9 (5m49s ago)    92d
+monitoring     prometheus-kube-state-metrics-545f555fdd-9t4pp           1/1     Running            8 (5m55s ago)    92d
+monitoring     prometheus-prometheus-kube-prometheus-prometheus-0       2/2     Running            12 (6m55s ago)   92d
+monitoring     prometheus-prometheus-node-exporter-k8xfm                1/1     Running            6 (6m55s ago)    92d
+monitoring     tempo-0                                                  1/1     Running            6 (6m55s ago)    92d
