@@ -1,7 +1,9 @@
+==>clone github chart
+    git clone https://github.com/cloudnative-pg/charts.git
 # Commands to install CloudNativePG as a cluster in my kubernetes using HELM:
 -------------------------------------------------------------------------------
     # Install the CloudNativePG operator using Helm:
-    ------------------------------------------------
+    ------------------------------------------------ 
         1. Add the CloudNativePG Helm repository:
             -->helm repo add cloudnative-pg https://cloudnative-pg.github.io/charts
         2. Update your local Helm chart repository cache:
