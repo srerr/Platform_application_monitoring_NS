@@ -1,1 +1,16 @@
-Test
+# Commands to install k8ssandra operator as a cluster in my kubernetes using HELM:
+----------------------------------------------------------------------------------
+    #install the k8ssandra operator using Helm:
+    -------------------------------------------
+    1) Add the k8ssandra Helm repository:
+        -->helm repo add k8ssandra https://helm.k8ssandra.io/stable
+    2) Update your local Helm chart repository cache:
+        -->helm repo update
+    3) Install the k8ssandra operator:
+        -->helm install my-k8ssandra k8ssandra/k8ssandra
+    4) helm show values and store into values.yaml
+        -->helm show values k8ssandra/k8ssandra > values.yaml
+    5) installing using the values.yaml file:
+        -->helm install my-k8ssandra k8ssandra/k8ssandra -f values.yaml
+    6) Verify the installation:
+        -->kubectl get pods -n k8ssandra
