@@ -11,9 +11,12 @@
         -->helm repo update
     3) Install the k8ssandra operator:
         -->helm install my-k8ssandra k8ssandra/k8ssandra
+        -->helm show values k8ssandra/k8ssandra-operator
     4) helm show values and store into values.yaml
         -->helm show values k8ssandra/k8ssandra > values.yaml
+        -->helm show values k8ssandra/k8ssandra-operator > values1.yaml
     5) installing using the values.yaml file:
         -->helm install my-k8ssandra k8ssandra/k8ssandra -f values.yaml
+        -->helm install my-k8ssandra k8ssandra/k8ssandra -f values1.yaml -n corens
     6) Verify the installation:
         -->kubectl get pods -n k8ssandra
