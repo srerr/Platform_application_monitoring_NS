@@ -1,8 +1,15 @@
+Doc:https://docs-v2.k8ssandra.io/install/local/multi-cluster-helm/#deploy-the-k8ssandracluster
 #git link: https://github.com/k8ssandra/k8ssandra-operator.git
 ==>clone github chart
     git clone https://github.com/k8ssandra/k8ssandra-operator.git
-# Commands to install k8ssandra operator as a cluster in my kubernetes using HELM:
-----------------------------------------------------------------------------------
+# Commands to install k8ssandra operator in my kubernetes using HELM:
+---------------------------------------------------------------------
+    #install cert-manager:
+    ----------------------
+    -->helm repo add jetstack https://charts.jetstack.io
+    -->helm repo update
+    -->kubectl create namespace cert-manager
+    -->helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace
     #install the k8ssandra operator using Helm:
     -------------------------------------------
     1) Add the k8ssandra Helm repository:
@@ -12,11 +19,41 @@
     3) Install the k8ssandra operator:
         -->helm install my-k8ssandra k8ssandra/k8ssandra
         -->helm show values k8ssandra/k8ssandra-operator
+        -->helm install k8ssandra-operator k8ssandra/k8ssandra-operator -n k8ssandra-operator --create-namespace
     4) helm show values and store into values.yaml
         -->helm show values k8ssandra/k8ssandra > values.yaml
         -->helm show values k8ssandra/k8ssandra-operator > values1.yaml
     5) installing using the values.yaml file:
         -->helm install my-k8ssandra k8ssandra/k8ssandra -f values.yaml
-        -->helm install my-k8ssandra k8ssandra/k8ssandra -f values1.yaml -n corens
+        -->helm install my-k8ssandra k8ssandra/k8ssandra-operator -f values1.yaml -n corens
     6) Verify the installation:
         -->kubectl get pods -n k8ssandra
+
+
+# Multi-cluster install with helm:
+----------------------------------
+    a)Prerequisites:
+        Make sure you have the following installed before going through the related install topics.
+        1) kind (Doc:https://kind.sigs.k8s.io/docs/user/quick-start/)
+            -->curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.30.0/kind-linux-amd64
+            -->chmod +x ./kind
+            -->mv ./kind /usr/local/bin/kind
+        2) kubectx:
+            -->git clone https://github.com/ahmetb/kubectx.git
+            -->cd kubectx
+            -->mv kubectx /usr/local/bin/kubectx
+            OR
+            -->sudo snap install kubectx --classic
+        3) yq (YAML processor)
+            -->sudo snap install yq
+            -->https://github.com/mikefarah/yq#install
+        4) gnu-getopt(pre installed on most linux distros)
+            -->https://formulae.brew.sh/formula/gnu-getopt
+            -->sudo apt-get install -y gnu-getopt
+        5) kubectl and helm v3+ on your preferred OS.
+    b)Create a cluster by running script:
+        1)Invoke make with the following parameters:
+            -->scripts/setup-kind-multicluster.sh --clusters 3 --kind-worker-nodes 4
+            OR
+            -->kind create cluster --name k8ssandra-0 --config kind-cluster.yaml
+            DOC:https://kind.sigs.k8s.io/docs/user/known-issues/#pod-errors-due-to-too-many-open-files [FOR issues ERROR: failed to create cluster: could not find a log line that matches "Reached target .*Multi-User System.*|detected cgroup v1"]
