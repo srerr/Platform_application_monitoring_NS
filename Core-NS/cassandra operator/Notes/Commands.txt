@@ -57,3 +57,58 @@ Doc:https://docs-v2.k8ssandra.io/install/local/multi-cluster-helm/#deploy-the-k8
             OR
             -->kind create cluster --name k8ssandra-0 --config kind-cluster.yaml
             DOC:https://kind.sigs.k8s.io/docs/user/known-issues/#pod-errors-due-to-too-many-open-files [FOR issues ERROR: failed to create cluster: could not find a log line that matches "Reached target .*Multi-User System.*|detected cgroup v1"]
+        2)Install cert-manager in each cluster:
+            -->helm repo add jetstack https://charts.jetstack.io
+            -->helm repo update
+            -->kubectl config use-context kind-k8ssandra-0
+            -->helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true
+            -->kubectl config use-context kind-k8ssandra-1
+            -->helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true
+            -->kubectl config use-context kind-k8ssandra-2
+            -->helm install cert-manager jetstack/cert-manager --namespace cert-manager --create-namespace --set installCRDs=true
+        3)Install K8ssandra Operator in the control-plane:
+            -->helm repo add k8ssandra https://helm.k8ssandra.io/stable
+            -->helm repo update
+            -->helm search repo k8ssandra-operator
+            -->kubectl config use-context kind-k8ssandra-0
+            -->helm install k8ssandra-operator k8ssandra/k8ssandra-operator -n k8ssandra-operator --create-namespace
+        4)Install K8ssandra Operator in the data-planes:
+            -->kubectl config use-context kind-k8ssandra-1
+            -->helm install k8ssandra-operator k8ssandra/k8ssandra-operator -n k8ssandra-operator --create-namespace --set controlPlane=false
+            -->kubectl config use-context kind-k8ssandra-2
+            -->helm install k8ssandra-operator k8ssandra/k8ssandra-operator -n k8ssandra-operator --create-namespace --set controlPlane=false
+        5)Verify control-plane configuration:
+            -->kubectl config use-context kind-k8ssandra-0
+            -->kubectl -n k8ssandra-operator get deployment k8ssandra-operator -o jsonpath='{.spec.template.spec.containers[0].env[?(@.name=="K8SSANDRA_CONTROL_PLANE")].value}'
+        6)Verify data-plane configuration:
+            -->kubectl config use-context kind-k8ssandra-1
+            -->kubectl -n k8ssandra-operator get deployment k8ssandra-operator -o jsonpath='{.spec.template.spec.containers[0].env[?(@.name=="K8SSANDRA_CONTROL_PLANE")].value}'
+            -->kubectl config use-context kind-k8ssandra-2
+            -->kubectl -n k8ssandra-operator get deployment k8ssandra-operator -o jsonpath='{.spec.template.spec.containers[0].env[?(@.name=="K8SSANDRA_CONTROL_PLANE")].value}'
+        7)Generate and install ClientConfigs:
+            -->kubectl config use-context kind-k8ssandra-0
+            -->scripts/create-clientconfig.sh  --namespace k8ssandra-operator --src-kubeconfig ~/.kube/config --dest-kubeconfig ~/.kube/config --src-context kind-k8ssandra-1 --dest-context kind-k8ssandra-0 --output-dir clientconfig
+            -->scripts/create-clientconfig.sh --namespace k8ssandra-operator --src-kubeconfig ~/.kube/config --dest-kubeconfig ~/.kube/config --src-context kind-k8ssandra-2 --dest-context kind-k8ssandra-0 --output-dir clientconfig
+        8)Deploy the K8ssandraCluster:
+            -->kubectl config use-context kind-k8ssandra-0
+            -->kubectl apply -n k8ssandra-operator -f k8ssandra-cluster.yaml
+        9)Verify pod deployment:
+            -->kubectl config use-context kind-k8ssandra-1
+            -->kubectl get pods -n k8ssandra-operator
+            -->kubectl config use-context kind-k8ssandra-2
+            -->kubectl get pods -n k8ssandra-operator
+            -->kubectl config use-context kind-k8ssandra-0
+            -->kubectl get pods -n k8ssandra-operator
+        10)Verify K8ssandraCluster status :
+            -->kubectl config use-context kind-k8ssandra-0
+            -->kubectl describe k8cs demo -n k8ssandra-operator
+        11)Extract credentials:
+            -->On the control plane, use the following commands to extract the username and password.
+                -->kubectl config use-context kind-k8ssandra-0
+                -->CASS_USERNAME=$(kubectl get secret demo-superuser -n k8ssandra-operator -o=jsonpath='{.data.username}' | base64 --decode)
+                -->echo $CASS_USERNAME
+                -->CASS_PASSWORD=$(kubectl get secret demo-superuser -n k8ssandra-operator -o=jsonpath='{.data.password}' | base64 --decode)
+                -->echo $CASS_PASSWORD
+        12)Verify cluster status :
+                -->kubectl config use-context kind-k8ssandra-1
+                -->kubectl exec -it demo-dc1-default-sts-0 -n k8ssandra-operator -c cassandra -- nodetool -u $CASS_USERNAME -pw $CASS_PASSWORD status
