@@ -33,7 +33,24 @@ Git link --> https://github.com/hashicorp/vault-helm
 5. Install the Vault Helm chart with the following command:
     -->helm install vault hashicorp/vault --values helm-vault-raft-values.yml
 6. Get all the pods within the default namespace.
-    -->kubectl get pods
+    -->kubectl get pods -n corens
 7. Verify the installation:
-        
-   
+    NAME: vault
+    LAST DEPLOYED: Thu Sep 18 03:49:18 2025
+    NAMESPACE: corens
+    STATUS: deployed
+    REVISION: 1
+    NOTES:
+    Thank you for installing HashiCorp Vault!
+
+    Now that you have deployed Vault, you should look over the docs on using
+    Vault with Kubernetes available here:
+
+    https://developer.hashicorp.com/vault/docs
+
+
+    Your release is named vault. To learn more about the release, try:
+
+    $ helm status vault
+    $ helm get manifest vault     
+    
