@@ -38,7 +38,7 @@
 => Route 53 for DNS management and certificate Manager for SSL/TLS certificates
 => Nagios for infrastructure monitoring
 
-
+PART-1:
 #Application Namespace:
 -----------------------
 1) Application Deployments
@@ -81,6 +81,7 @@
 11) monitoring ConfigMaps
 12) monitoring pvc's
 
+PART- 2:
 # list of gitops tools
 1) Argo CD
 2) Flux
