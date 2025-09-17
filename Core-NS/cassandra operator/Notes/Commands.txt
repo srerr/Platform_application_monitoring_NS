@@ -1,4 +1,5 @@
 Doc:https://docs-v2.k8ssandra.io/install/local/multi-cluster-helm/#deploy-the-k8ssandracluster
+backup doc: https://docs-v2.k8ssandra.io/tasks/backup-restore/amazon-s3/
 #git link: https://github.com/k8ssandra/k8ssandra-operator.git
 ==>clone github chart
     git clone https://github.com/k8ssandra/k8ssandra-operator.git
@@ -30,8 +31,8 @@ Doc:https://docs-v2.k8ssandra.io/install/local/multi-cluster-helm/#deploy-the-k8
         -->kubectl get pods -n k8ssandra
 
 
-# Multi-cluster install with helm:
-----------------------------------
+# Setting up multi-cluster with helm:
+-------------------------------------
     a)Prerequisites:
         Make sure you have the following installed before going through the related install topics.
         1) kind (Doc:https://kind.sigs.k8s.io/docs/user/quick-start/)

@@ -1,0 +1,39 @@
+Doc link --> https://developer.hashicorp.com/vault/tutorials/kubernetes-platforms/kubernetes-amazon-eks
+Git link --> https://github.com/hashicorp/vault-helm
+# Commands to install HCP Vault using Helm:
+------------------------------------------------
+1. Add the HashiCorp Helm repository:
+    -->helm repo add hashicorp https://helm.releases.hashicorp.com
+2. Update your local Helm chart repository cache:
+    -->helm repo update
+3. Search for all the Vault Helm chart versions.
+    -->helm search repo hashicorp/vault --versions
+4. Create a file named helm-vault-raft-values.yml with the following contents:
+    cat > helm-vault-raft-values.yml <<EOF
+            server:
+            affinity: ""
+            ha:
+                enabled: true
+                raft:
+                    enabled: true
+                    setNodeId: true
+                    config: |
+                        cluster_name = "vault-integrated-storage"
+                        storage "raft" {
+                        path    = "/vault/data/"
+                        }
+
+                        listener "tcp" {
+                        address = "[::]:8200"
+                        cluster_address = "[::]:8201"
+                        tls_disable = "true"
+                        }
+                        service_registration "kubernetes" {}
+            EOF
+5. Install the Vault Helm chart with the following command:
+    -->helm install vault hashicorp/vault --values helm-vault-raft-values.yml
+6. Get all the pods within the default namespace.
+    -->kubectl get pods
+7. Verify the installation:
+        
+   

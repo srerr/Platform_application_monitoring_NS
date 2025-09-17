@@ -50,21 +50,21 @@
 
 # core-namespace:
 -----------------
-1) postgres operator
+1) postgres operator -->Done
     ->https://youtu.be/Ny9RxM6H6Hg?si=ok4kW52deYBcuWrF
     -> https://www.youtube.com/watch?v=XB-kBqLj5uA
     ->https://www.youtube.com/watch?v=ha3LjlD6g7g
 
-2) cassandra operator
-3) Hashicorp Vault
-4) Hashicorp Consul
+2) cassandra operator -->Done
+3) Hashicorp Vault --> in progress
+4) Hashicorp Consul  
 5) core ConfigMaps
 6) core pvc's
 7) Ingress
 8) External DNS
 9) AWS-secrets-manager
 10) cassandra backup tool Medusa(job)
-11) Postgres backup tool Barman(job)
+11) Postgres backup tool Barman(job) --> Done
 
 # Monitoring Namespace:
 ------------------------
